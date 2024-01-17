@@ -38,11 +38,11 @@ public class AutoreBlogPostService {
     public AutoreBlogPost findByIdAndUpdate(UUID id, AutoreBlogPost autoreBlogPost) {
         AutoreBlogPost found = this.findById(id);
 
-        found.setNome(autoreBlogPost.getNome());
-        found.setCognome(autoreBlogPost.getCognome());
-        found.setEmail(autoreBlogPost.getEmail());
-        found.setDataDiNascita(autoreBlogPost.getDataDiNascita());
-        found.setAvatar(autoreBlogPost.getAvatar());
+        found.setNome(autoreBlogPost.getNome() != null ? autoreBlogPost.getNome() : found.getNome());
+        found.setCognome(autoreBlogPost.getCognome() != null ? autoreBlogPost.getCognome() : found.getCognome());
+        found.setEmail(autoreBlogPost.getEmail() != null ? autoreBlogPost.getEmail() : found.getEmail());
+        found.setDataDiNascita(autoreBlogPost.getDataDiNascita() != null ? autoreBlogPost.getDataDiNascita(): found.getDataDiNascita());
+        found.setAvatar(autoreBlogPost.getAvatar()!= null? autoreBlogPost.getAvatar() : found.getAvatar());
 
         return autoreBlogPostRepository.save(found);
     }
