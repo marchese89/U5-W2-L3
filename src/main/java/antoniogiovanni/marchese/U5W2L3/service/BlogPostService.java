@@ -2,63 +2,53 @@ package antoniogiovanni.marchese.U5W2L3.service;
 
 import antoniogiovanni.marchese.U5W2L3.exceptions.NotFoundException;
 import antoniogiovanni.marchese.U5W2L3.model.BlogPost;
+import antoniogiovanni.marchese.U5W2L3.repository.AutoreBlogPostRepository;
+import antoniogiovanni.marchese.U5W2L3.repository.BlogPostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
 @Service
 public class BlogPostService {
-    private List<BlogPost> blogbostList = new ArrayList<>();
+    @Autowired
+    private BlogPostRepository blogPostRepository;
 
-    public List<BlogPost> getBlogbostList() {
-        return this.blogbostList;
+    @Autowired
+    private AutoreBlogPostService autoreBlogPostService;
+
+    public Page<BlogPost> getBlogbostList(int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(orderBy).descending());
+        return blogPostRepository.findAll(pageable);
     }
 
-    public BlogPost save(BlogPost body) {
-        Random rndm = new Random();
-        body.setId(rndm.nextInt(1, 2000));
-        this.blogbostList.add(body);
-        return body;
+    public BlogPost save(BlogPost blogPost,UUID idAutore) {
+        blogPost.setAutoreBlogPost(autoreBlogPostService.findById(idAutore));
+        return blogPostRepository.save(blogPost);
     }
 
-    public BlogPost findById(int id) {
-        BlogPost found = null;
-        for (BlogPost user : this.blogbostList) {
-            if (user.getId() == id) {
-                found = user;
-            }
-        }
-        if (found == null)
-            throw new NotFoundException(id);
-        return found;
+    public BlogPost findById(UUID id) {
+        return blogPostRepository.findById(id).orElseThrow(()-> new NotFoundException(id));
     }
 
-    public void findByIdAndDelete(int id) {
-        Iterator<BlogPost> iterator = this.blogbostList.iterator();
-        while (iterator.hasNext()) {
-            BlogPost current = iterator.next();
-            if (current.getId() == id) {
-                iterator.remove();
-            }
-        }
+    public void findByIdAndDelete(UUID id) {
+        BlogPost found = this.findById(id);
+        blogPostRepository.delete(found);
     }
 
-    public BlogPost findByIdAndUpdate(int id, BlogPost blogpost) {
-        BlogPost found = null;
-        for (BlogPost user : this.blogbostList) {
-            if (user.getId() == id) {
-                found = user;
-                found.setCategoria(blogpost.getCategoria());
-                found.setTitolo(blogpost.getTitolo());
-                found.setCover(blogpost.getCover());
-                found.setContenuto(blogpost.getContenuto());
-                found.setTempoDiLettura(blogpost.getTempoDiLettura());
-            }
-        }
-        if (found == null)
-            throw new NotFoundException(id);
-        return found;
+    public BlogPost findByIdAndUpdate(UUID id, BlogPost blogpost) {
+        BlogPost found = this.findById(id);
+
+        found.setCategoria(blogpost.getCategoria() != null ? blogpost.getCategoria(): found.getCategoria());
+        found.setTitolo(blogpost.getTitolo()!= null ? blogpost.getTitolo(): found.getTitolo());
+        found.setCover(blogpost.getCover() != null ? blogpost.getCover() : found.getCover());
+        found.setContenuto(blogpost.getContenuto() != null ? blogpost.getContenuto() : found.getContenuto());
+        found.setTempoDiLettura(blogpost.getTempoDiLettura() != null ? blogpost.getTempoDiLettura() : found.getTempoDiLettura());
+
+        return blogPostRepository.save(found);
     }
 }

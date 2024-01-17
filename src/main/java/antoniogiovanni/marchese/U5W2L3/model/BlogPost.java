@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.U5W2L3.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,9 @@ public class BlogPost {
     private String titolo;
     private String cover;
     private String contenuto;
-    private int tempoDiLettura;//minuti
+    private Integer tempoDiLettura;//minuti
     @ManyToOne
     @JoinColumn(name = "autore_id")
+    @JsonBackReference
     private AutoreBlogPost autoreBlogPost;
 }

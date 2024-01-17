@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.U5W2L3.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,6 @@ public class AutoreBlogPost {
     private LocalDate dataDiNascita;
     private String avatar;
     @OneToMany(mappedBy = "autoreBlogPost")
+    @JsonManagedReference
     private List<BlogPost> blogPostList;
 }
