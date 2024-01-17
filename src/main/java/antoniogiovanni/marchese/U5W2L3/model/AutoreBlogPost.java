@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.U5W2L3.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class AutoreBlogPost {
     private String avatar;
     @OneToMany(mappedBy = "autoreBlogPost")
     @JsonManagedReference
+    //@JsonIgnore <- rimuove l'elemento dal json
     private List<BlogPost> blogPostList;
 }
